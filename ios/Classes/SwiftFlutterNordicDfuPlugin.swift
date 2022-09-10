@@ -91,13 +91,12 @@ public class SwiftFlutterNordicDfuPlugin: NSObject, FlutterPlugin, DFUServiceDel
             return
         }
         
-        guard let firmware = DFUFirmware(urlToZipFile: URL(fileURLWithPath: filePath)) else {
+        guard let firmware = try? DFUFirmware(urlToZipFile: URL(fileURLWithPath: filePath)) else {
             result(FlutterError(code: "DFU_FIRMWARE_NOT_FOUND", message: "Could not dfu zip file", details: nil))
             return
         }
-        
-        let dfuInitiator = DFUServiceInitiator(queue: nil)
-            .with(firmware: firmware);
+
+        let dfuInitiator = DFUServiceInitiator(queue: nil).with(firmware: firmware);
         dfuInitiator.delegate = self
         dfuInitiator.progressDelegate = self
         dfuInitiator.logger = self
